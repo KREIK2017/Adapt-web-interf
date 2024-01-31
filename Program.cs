@@ -1,74 +1,44 @@
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 class Program
 {
-	static void Main()
+	static async Task Main()
 	{
-		while (true)
+		// 1. Робота з System.IO API: Створення, запис і читання файлу
+		string filePath = "example.txt";
+		File.WriteAllText(filePath, "This is an example of text written to a file.");
+		string content = File.ReadAllText(filePath);
+		Console.WriteLine($"File content {filePath}:\n{content}");
+
+		// 2. Робота з System.Net.Http API: Виконання HTTP-запиту
+		using (HttpClient client = new HttpClient())
 		{
-			Console.WriteLine("Choose an option:");
-			Console.WriteLine("1. Count the number of words in the text");
-			Console.WriteLine("2. Perform a mathematical operation");
-			Console.WriteLine("3. Exit");
-
-			Console.Write("Enter the option number: ");
-			string input = Console.ReadLine();
-
-			switch (input)
-			{
-				case "1":
-					CountWords();
-					break;
-				case "2":
-					PerformMathOperation();
-					break;
-				case "3":
-					Console.WriteLine("Thank you for using the program. Goodbye!");
-					return;
-				default:
-					Console.WriteLine("Invalid choice. Please try again.");
-					break;
-			}
-
-			Console.WriteLine("\nPress any key to continue...");
-			Console.ReadKey();
-			Console.Clear();
+			HttpResponseMessage response = await client.GetAsync("https://moodle3.chmnu.edu.ua/");
+			string responseContent = await response.Content.ReadAsStringAsync();
+			Console.WriteLine($"HTTP response from moodle3.chmnu.edu.ua:\n{responseContent}");
 		}
-	}
 
-	static void CountWords()
-	{
-		// Read text from a file
-		string loremText = File.ReadAllText("LoremIpsum.txt");
+		// 3. Робота з System.Linq API: Використання LINQ для фільтрації колекції
+		int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		var evenNumbers = numbers.Where(n => n % 2 == 0);
+		Console.WriteLine("Even numbers: " + string.Join(", ", evenNumbers));
 
-		// Count the number of words
-		int wordCount = loremText.Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
+		// 4. Робота з System.Threading.Tasks API: Асинхронне виконання операцій
+		await Task.Delay(2000);
+		Console.WriteLine("The pause is over. Continue executing the program.");
 
-		Console.WriteLine($"Number of words in the text: {wordCount}");
-	}
+		// 5. Робота з System.Xml API: Робота з XML-документом
+		string xmlString = "<book><title>Sample Book</title></book>";
+		XDocument xmlDoc = XDocument.Parse(xmlString);
+		string title = xmlDoc.Root?.Element("title")?.Value;
+		Console.WriteLine($"Book title with XML: {title}");
 
-	static void PerformMathOperation()
-	{
-		Console.Write("Enter a mathematical expression to evaluate: ");
-		string expression = Console.ReadLine();
 
-		try
-		{
-			// Perform the mathematical operation
-			double result = EvaluateMathExpression(expression);
-			Console.WriteLine($"Result: {result}");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Error performing the operation: {ex.Message}");
-		}
-	}
-
-	static double EvaluateMathExpression(string expression)
-	{
-		var dataTable = new System.Data.DataTable();
-		var result = dataTable.Compute(expression, "");
-		return Convert.ToDouble(result);
+		Console.ReadLine();
 	}
 }
