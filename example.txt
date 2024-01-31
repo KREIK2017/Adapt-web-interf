@@ -1,0 +1,1 @@
+This is an example of text written to a file.
