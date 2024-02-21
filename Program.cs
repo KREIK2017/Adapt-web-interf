@@ -1,63 +1,83 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Reflection;
 
-class Program
+public class MyClass
 {
+	// РџРѕР»СЏ РєР»Р°СЃСѓ
+	private int _privateField;
+	public string PublicField;
+	internal double InternalField;
+	protected bool ProtectedField;
+	protected internal decimal ProtectedInternalField;
+
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСѓ
+	public MyClass(int privateField, string publicField, double internalField,
+				   bool protectedField, decimal protectedInternalField)
+	{
+		_privateField = privateField;
+		PublicField = publicField;
+		InternalField = internalField;
+		ProtectedField = protectedField;
+		ProtectedInternalField = protectedInternalField;
+	}
+
+	// РњРµС‚РѕРґРё РєР»Р°СЃСѓ
+	public void Method1()
+	{
+		Console.WriteLine("Р’РёРєР»РёРє РјРµС‚РѕРґСѓ Method1");
+	}
+
+	public int Method2(int value)
+	{
+		Console.WriteLine($"Р’РёРєР»РёРє РјРµС‚РѕРґСѓ Method2 Р· Р°СЂРіСѓРјРµРЅС‚РѕРј {value}");
+		return value * 2;
+	}
+
+	public string Method3(string message)
+	{
+		Console.WriteLine($"Р’РёРєР»РёРє РјРµС‚РѕРґСѓ Method3 Р· Р°СЂРіСѓРјРµРЅС‚РѕРј {message}");
+		return message.ToUpper();
+	}
+
 	static void Main()
 	{
-		// Виклики методів для демонстрації
-		RunThreadDemo();
-		RunAsyncAwaitDemo();
+		// РџСЂРёРєР»Р°Рґ СЂРѕР±РѕС‚Рё Р· Type С– TypeInfo
+		Type myType = typeof(MyClass);
+		TypeInfo typeInfo = myType.GetTypeInfo();
+		Console.WriteLine("///// 2 /////");
+		Console.WriteLine($"Type: {myType}");
+		Console.WriteLine($"Type.FullName: {typeInfo.FullName}");
+
+		// РџСЂРёРєР»Р°Рґ СЂРѕР±РѕС‚Рё Р· MemberInfo
+
+		MemberInfo[] members = myType.GetMembers();
+		Console.WriteLine("///// 3 /////");
+
+		Console.WriteLine("\nMembers:");
+		foreach (MemberInfo member in members)
+		{
+			Console.WriteLine($"{member.MemberType}: {member.Name}");
+		}
+
+		// РџСЂРёРєР»Р°Рґ СЂРѕР±РѕС‚Рё Р· FieldInfo
+		Console.WriteLine("///// 4 /////");
+
+		FieldInfo[] fields = myType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+		Console.WriteLine("\nFields:");
+		foreach (FieldInfo field in fields)
+		{
+			Console.WriteLine($"{field.FieldType} {field.Name}");
+		}
+
+		// РџСЂРёРєР»Р°Рґ СЂРѕР±РѕС‚Рё Р· MethodInfo
+		Console.WriteLine("///// 5 /////");
+
+		MethodInfo method = myType.GetMethod("Method2");
+		Console.WriteLine($"\nMethod: {method.Name}");
+		object instance = Activator.CreateInstance(myType, 10, "test", 3.14, true, 5.67m);
+		object result = method.Invoke(instance, new object[] { 5 });
+		Console.WriteLine($"Result: {result}");
 
 		Console.ReadLine();
-	}
-
-	// Перший метод - демонстрація класу Thread
-	static void RunThreadDemo()
-	{
-		Console.WriteLine("Початок роботи з потоками.");
-
-		// Створення та запуск нового потоку
-		Thread thread = new Thread(ThreadMethod);
-		thread.Start();
-
-		// Очікування завершення роботи потоку
-		thread.Join();
-
-		Console.WriteLine("Завершення роботи з потоками.");
-		Console.WriteLine();
-	}
-
-	// Метод для виконання у потоці
-	static void ThreadMethod()
-	{
-		Console.WriteLine("Початок роботи у потоці.");
-		Thread.Sleep(2000); // Імітація роботи
-		Console.WriteLine("Завершення роботи у потоці.");
-	}
-
-	// Другий метод - демонстрація Async - Await
-	static void RunAsyncAwaitDemo()
-	{
-		Console.WriteLine("Початок роботи з Async - Await.");
-
-		// Виклик асинхронного методу
-		Task task = AwaitMethod();
-		task.Wait(); // Очікування завершення асинхронного методу
-
-		Console.WriteLine("Завершення роботи з Async - Await.");
-		Console.WriteLine();
-	}
-
-	// Асинхронний метод
-	static async Task AwaitMethod()
-	{
-		Console.WriteLine("Початок асинхронного методу.");
-
-		// Асинхронне очікування 3 секунди
-		await Task.Delay(3000);
-
-		Console.WriteLine("Завершення асинхронного методу.");
 	}
 }
