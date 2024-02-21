@@ -3,14 +3,13 @@ using System.Reflection;
 
 public class MyClass
 {
-	// Поля класу
+
 	private int _privateField;
 	public string PublicField;
 	internal double InternalField;
 	protected bool ProtectedField;
 	protected internal decimal ProtectedInternalField;
 
-	// Конструктор класу
 	public MyClass(int privateField, string publicField, double internalField,
 				   bool protectedField, decimal protectedInternalField)
 	{
@@ -21,7 +20,6 @@ public class MyClass
 		ProtectedInternalField = protectedInternalField;
 	}
 
-	// Методи класу
 	public void Method1()
 	{
 		Console.WriteLine("Виклик методу Method1");
@@ -41,14 +39,11 @@ public class MyClass
 
 	static void Main()
 	{
-		// Приклад роботи з Type і TypeInfo
 		Type myType = typeof(MyClass);
 		TypeInfo typeInfo = myType.GetTypeInfo();
 		Console.WriteLine("///// 2 /////");
 		Console.WriteLine($"Type: {myType}");
 		Console.WriteLine($"Type.FullName: {typeInfo.FullName}");
-
-		// Приклад роботи з MemberInfo
 
 		MemberInfo[] members = myType.GetMembers();
 		Console.WriteLine("///// 3 /////");
@@ -59,7 +54,6 @@ public class MyClass
 			Console.WriteLine($"{member.MemberType}: {member.Name}");
 		}
 
-		// Приклад роботи з FieldInfo
 		Console.WriteLine("///// 4 /////");
 
 		FieldInfo[] fields = myType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
@@ -69,7 +63,6 @@ public class MyClass
 			Console.WriteLine($"{field.FieldType} {field.Name}");
 		}
 
-		// Приклад роботи з MethodInfo
 		Console.WriteLine("///// 5 /////");
 
 		MethodInfo method = myType.GetMethod("Method2");
