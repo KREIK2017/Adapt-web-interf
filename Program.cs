@@ -1,63 +1,39 @@
 using System;
-using System.Threading;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 class Program
 {
-	static void Main()
+	static HttpClient httpClient = new HttpClient();
+	static async Task Main()
 	{
-		// Виклики методів для демонстрації
-		RunThreadDemo();
-		RunAsyncAwaitDemo();
+		APIClient apiClient = new APIClient();
+		ResponseModel<string> response = await apiClient.GetRandomText();
 
-		Console.ReadLine();
-	}
+		// Перевірка, чи відповідь успішна
+		if (response.HttpStatusCode == 200)
+		{
+			Console.WriteLine($"Message: {response.Message}");
+			Console.WriteLine($"HTTP Status Code: {response.HttpStatusCode}");
 
-	// Перший метод - демонстрація класу Thread
-	static void RunThreadDemo()
-	{
-		Console.WriteLine("Початок роботи з потоками.");
+			// Виведення отриманих даних з API
+			if (response.Data != null)
+			{
+				foreach (var data in response.Data)
+				{
+					Console.WriteLine($"Data from API: {data}");
+				}
+			}
+			else
+			{
+				Console.WriteLine("No data received from API.");
+			}
+		}
+		else
+		{
+			Console.WriteLine($"Error: {response.Message}");
+			Console.WriteLine($"HTTP Status Code: {response.HttpStatusCode}");
+		}
 
-		// Створення та запуск нового потоку
-		Thread thread = new Thread(ThreadMethod);
-		thread.Start();
-
-		// Очікування завершення роботи потоку
-		thread.Join();
-
-		Console.WriteLine("Завершення роботи з потоками.");
-		Console.WriteLine();
-	}
-
-	// Метод для виконання у потоці
-	static void ThreadMethod()
-	{
-		Console.WriteLine("Початок роботи у потоці.");
-		Thread.Sleep(2000); // Імітація роботи
-		Console.WriteLine("Завершення роботи у потоці.");
-	}
-
-	// Другий метод - демонстрація Async - Await
-	static void RunAsyncAwaitDemo()
-	{
-		Console.WriteLine("Початок роботи з Async - Await.");
-
-		// Виклик асинхронного методу
-		Task task = AwaitMethod();
-		task.Wait(); // Очікування завершення асинхронного методу
-
-		Console.WriteLine("Завершення роботи з Async - Await.");
-		Console.WriteLine();
-	}
-
-	// Асинхронний метод
-	static async Task AwaitMethod()
-	{
-		Console.WriteLine("Початок асинхронного методу.");
-
-		// Асинхронне очікування 3 секунди
-		await Task.Delay(3000);
-
-		Console.WriteLine("Завершення асинхронного методу.");
 	}
 }
