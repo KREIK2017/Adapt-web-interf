@@ -10,8 +10,8 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "WebAPI", Version = "v1" });
 });
 
-//3.  AddSingleton - Сервіс створюється один раз під час запуску додатка і буде повторно використовуватись для всіх запитів.
-//    Це може бути корисно для служб, які роблять щось загальне для всього додатку.
+//3.  AddSingleton - РЎРµСЂРІС–СЃ СЃС‚РІРѕСЂСЋС”С‚СЊСЃСЏ РѕРґРёРЅ СЂР°Р· РїС–Рґ С‡Р°СЃ Р·Р°РїСѓСЃРєСѓ РґРѕРґР°С‚РєР° С– Р±СѓРґРµ РїРѕРІС‚РѕСЂРЅРѕ РІРёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚РёСЃСЊ РґР»СЏ РІСЃС–С… Р·Р°РїРёС‚С–РІ.
+//    Р¦Рµ РјРѕР¶Рµ Р±СѓС‚Рё РєРѕСЂРёСЃРЅРѕ РґР»СЏ СЃР»СѓР¶Р±, СЏРєС– СЂРѕР±Р»СЏС‚СЊ С‰РѕСЃСЊ Р·Р°РіР°Р»СЊРЅРµ РґР»СЏ РІСЃСЊРѕРіРѕ РґРѕРґР°С‚РєСѓ.
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICategoryService, CategoryService>();
