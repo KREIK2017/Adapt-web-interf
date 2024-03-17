@@ -1,24 +1,27 @@
+using RESTwebAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "WebAPI", Version = "v1" });
 });
+
+//3.  AddSingleton - Сервіс створюється один раз під час запуску додатка і буде повторно використовуватись для всіх запитів.
+//    Це може бути корисно для служб, які роблять щось загальне для всього додатку.
+builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddSingleton<ICategoryService, CategoryService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    // 3 .../swagger/index.html
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI");
-    });
+    app.UseSwaggerUI();
 }
 else
 {
