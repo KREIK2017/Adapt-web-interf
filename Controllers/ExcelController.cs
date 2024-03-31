@@ -12,6 +12,7 @@ namespace RESTwebAPI.Controllers
     [ApiVersion("1.0", Deprecated = true)]
     [ApiVersion("2.0")]
     [ApiVersion("3.0")]
+    [Authorize]
     public class ExcelController : ControllerBase
     {
         private readonly IExcelService _excelService;
