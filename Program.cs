@@ -8,11 +8,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using HealthChecks.UI.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-
+using RESTwebAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+//1
+await LoggerSetup.SetupLoggerAsync();
 
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
@@ -20,14 +20,11 @@ builder.Services.AddSingleton<ICategoryService, CategoryService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddTransient<IExcelService, ExcelService>();
 builder.Services.AddSingleton<IMyHealthCheck2, MyHealthCheck2>();
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "WebAPI", Version = "v1" });
-    
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
@@ -36,7 +33,6 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
@@ -69,16 +65,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          };
 });
 
-
 builder.Services.AddHealthChecks()
     .AddCheck<MyHealthCheck>("my_health_check")
     .AddCheck<MyHealthCheck>("my_service1_health_check");
 
-//4
-builder.Services.AddHealthChecks()
-           .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), name: "sql-server-check");
-//5
-builder.Services.AddDbContext<HealthChecksDb>(options =>
+builder.Services.AddHealthChecks().AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), name: "sql-server-check");
+
+builder.Services.AddDbContext<RESTwebAPI.Models.HealthChecksDb>(options =>
 {
     options.UseSqlServer("Server=DESKTOP-0USKCOF\\SQLEXPRESS;;Database=RestWepAPI;Trusted_Connection=True;TrustServerCertificate=True;");
 }
@@ -105,7 +98,6 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
@@ -121,21 +113,19 @@ app.Map("/login/{username}", (string username) =>
 
     return new JwtSecurityTokenHandler().WriteToken(jwt);
 });
-//2
+
 app.UseHealthChecks("/healthcheck1", new HealthCheckOptions
 {
     Predicate = (check) => check.Tags.Contains("my_service1_health_check"),
 });
 
-//3
 app.UseHealthChecks("/health");
-//4
+
 app.UseHealthChecks("/sqlserverhealth", new HealthCheckOptions
 {
     Predicate = (check) => check.Tags.Contains("sql_server_health_check"),
 });
 
-//5
 app.UseHealthChecksUI(options =>
 {
     options.UIPath = "/healthchecks-ui";
