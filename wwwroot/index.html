@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+</head>
+<body>
+    <h1>Currency Tracker</h1>
+    <ul id="currencyList">
+        <!-- Currency rates will be displayed here -->
+    </ul>
+
+    <script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/currencyhub")
+            .build();
+
+        connection.start().then(function () {
+            console.log("Connected to SignalR hub");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        connection.on("UpdateCurrencyRate", function (currency, rate) {
+            // Оновлення відображення курсу валют на веб-сторінці
+            var currencyElement = document.getElementById(currency);
+            if (currencyElement) {
+                currencyElement.innerText = rate.toFixed(2); // Оновити курс валюти
+            }
+        });
+    </script>
+</body>
+</html>
