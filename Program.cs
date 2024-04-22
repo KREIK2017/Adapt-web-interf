@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<CurrencyService>();
 var app = builder.Build();
 
 app.UseDeveloperExceptionPage();
