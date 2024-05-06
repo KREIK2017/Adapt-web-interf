@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using Serilog.Events;
 
-namespace ProductWebAPI.Models
+namespace RESTwebAPI.Models
 {
     public class LoggerSetup
     {

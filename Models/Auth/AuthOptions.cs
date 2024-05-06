@@ -1,13 +1,13 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace ProductWebAPI.Models
+namespace RESTwebAPI.Models.Auth
 {
     public class AuthOptions
     {
-        public const string ISSUER = "MyATBServer"; // издатель токена
-        public const string AUDIENCE = "MyATB"; // потребитель токена
-        const string KEY = "onemorebaby_onemoretime_onemorebaby_onemoretime!";   // ключ для шифрацииS
+        public const string ISSUER = "MyAuthServer"; // издатель токена
+        public const string AUDIENCE = "MyAuthClient"; // потребитель токена
+        const string KEY = "mysupersecret_secretsecretsecretkey!123";   // ключ для шифрации
         public static SymmetricSecurityKey GetSymmetricSecurityKey() => 
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
     }

@@ -1,4 +1,4 @@
-﻿namespace ProductWebAPI.Models
+﻿namespace RESTwebAPI.Models
 {
     public class ResponseModel<T>
     {

@@ -1,55 +1,55 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using ProductWebAPI.Models;
-using ProductWebAPI.Services;
+using RESTwebAPI.Models;
+using RESTwebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ProductWebAPI.Controllers
+namespace RESTwebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class CatalogController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly ICatalogService _CatalogService;
+        private readonly ICategoryService _categoryService;
 
-        public CatalogController(ICatalogService CatalogService)
+        public CategoryController(ICategoryService categoryService)
         {
-            _CatalogService = CatalogService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Catalog>>> Get()
+        public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
-            var Catalog = await _CatalogService.GetAllCatalogs();
-            return Ok(Catalog);
+            var category = await _categoryService.GetAllCategorysAsync();
+            return Ok(category);
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Catalog>> Get(int id)
+        public async Task<ActionResult<Category>> Get(int id)
         {
-            var Catalog = await _CatalogService.GetCatalog(id);
-            if (Catalog == null)
+            var category = await _categoryService.GetCategoryAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return Ok(Catalog.Data);
+            return Ok(category.Data);
         }
         [HttpPost]
-        public async Task<ActionResult<Catalog>> Post(Catalog Catalog)
+        public async Task<ActionResult<Category>> Post(Category category)
         {
-            var newCatalog = await _CatalogService.AddCatalog(Catalog);
-            return CreatedAtAction(nameof(Get), new { id = newCatalog.Data.CatalogId }, newCatalog.Data);
+            var newCategory = await _categoryService.AddCategoryAsync(category);
+            return CreatedAtAction(nameof(Get), new { id = newCategory.Data.CategoryId }, newCategory.Data);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Catalog Catalog)
+        public async Task<IActionResult> Put(int id, Category category)
         {
-            if (id != Catalog.CatalogId)
+            if (id != category.CategoryId)
             {
                 return BadRequest();
             }
 
-            var updatedCatalog = await _CatalogService.UpdateCatalog(id,Catalog);
-            if (updatedCatalog.Data == null)
+            var updatedCategory = await _categoryService.UpdateCategoryAsync(id,category);
+            if (updatedCategory.Data == null)
             {
                 return NotFound();
             }
@@ -59,8 +59,8 @@ namespace ProductWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deletedCatalog = await _CatalogService.DeleteCatalog(id);
-            if (deletedCatalog.Data == null)
+            var deletedCategory = await _categoryService.DeleteCategoryAsync(id);
+            if (deletedCategory.Data == null)
             {
                 return NotFound();
             }
